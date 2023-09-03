@@ -5,7 +5,6 @@ import com.ecommerce.cms.user.domain.model.JoinForm;
 import com.ecommerce.cms.user.domain.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 @Service
 @RequiredArgsConstructor
 public class JoinService {
