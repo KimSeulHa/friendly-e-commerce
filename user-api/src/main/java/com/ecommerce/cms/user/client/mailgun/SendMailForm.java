@@ -1,7 +1,6 @@
 package com.ecommerce.cms.user.client.mailgun;
 
 import lombok.*;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
