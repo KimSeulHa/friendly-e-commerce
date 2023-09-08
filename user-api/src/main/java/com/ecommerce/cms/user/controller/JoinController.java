@@ -4,21 +4,19 @@ import com.ecommerce.cms.user.domain.model.JoinForm;
 import com.ecommerce.cms.user.service.JoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class JoinAndLoginController {
+@RequestMapping("/join")
+public class JoinController {
     private final JoinService joinService;
-    @PostMapping("/join")
+    @PostMapping
     public ResponseEntity<String> join(@RequestBody JoinForm joinForm){
         System.out.println("들어옴>>>>name is>>"+joinForm.getName());
         return ResponseEntity.ok(joinService.Join(joinForm));
     }
-    @PutMapping("/join/validate")
+    @PutMapping("/validate")
     public ResponseEntity<String> validate(String email, String code){
         return ResponseEntity.ok(joinService.validate(email,code));
     }
