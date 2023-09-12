@@ -20,6 +20,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.mysql:mysql-connector-j'
 
+    implementation project(path:":cms-domain",configuration:"default")
     testImplementation 'com.h2database:h2'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -28,9 +29,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
     implementation 'org.springframework.data:spring-data-envers'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'org.apache.commons:commons-lang3:3.1'
+
 }
 
 dependencyManagement {
