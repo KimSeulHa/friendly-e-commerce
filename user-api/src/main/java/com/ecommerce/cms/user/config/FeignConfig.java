@@ -13,7 +13,7 @@ public class FeignConfig {
     @Qualifier(value = "mailgun")
     @Bean
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor(){
-        System.out.println("key is..."+key);
+        System.out.println("mailgun key is..."+key);
         return new BasicAuthRequestInterceptor("api",key);
     }
 }
