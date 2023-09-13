@@ -1,4 +1,4 @@
-package com.ecommerce.cms.user.service;
+package com.ecommerce.cms.user.service.customer;
 
 import com.ecommerce.cms.user.domain.entity.Customer;
 import com.ecommerce.cms.user.domain.repository.CustomerRepository;

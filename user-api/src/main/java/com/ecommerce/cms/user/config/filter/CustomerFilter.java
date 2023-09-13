@@ -1,6 +1,6 @@
 package com.ecommerce.cms.user.config.filter;
 
-import com.ecommerce.cms.user.service.CustomerService;
+import com.ecommerce.cms.user.service.customer.CustomerService;
 import com.ecommerce.domain.common.UserVo;
 import com.ecommerce.domain.config.JwtAuthenticationProvider;
 
