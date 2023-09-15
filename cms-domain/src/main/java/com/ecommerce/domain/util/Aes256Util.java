@@ -12,6 +12,7 @@ public class Aes256Util {
     private static String KEY = "ecommerceKeyIsKeyJustKey";
     private static String IV = KEY.substring(0,16);
 
+    /* 암호화 */
     public static String encrypt(String text){
         try{
             Cipher cipher = Cipher.getInstance(alg);
@@ -26,6 +27,8 @@ public class Aes256Util {
             return null;
         }
     }
+
+    /* 복호화 */
     public static String decrypt(String text){
         try{
             Cipher cipher = Cipher.getInstance(alg);
