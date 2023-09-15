@@ -18,6 +18,7 @@ import java.util.Locale;
 @AuditOverride(forClass = BaseEntity.class)
 public class Customer extends BaseEntity{
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
@@ -30,6 +31,9 @@ public class Customer extends BaseEntity{
     private LocalDateTime verifyExpiredDate;
     private String verificationCode;
     private boolean verify;
+
+    @Column(columnDefinition = "int default 0 ")
+    private Integer balance;
 
     public static Customer form(JoinForm joinForm){
         return Customer.builder()

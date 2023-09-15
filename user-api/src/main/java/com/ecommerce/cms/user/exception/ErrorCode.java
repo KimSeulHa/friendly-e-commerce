@@ -16,8 +16,10 @@ public enum ErrorCode {
 
     //ErrorCode for Login
     NOT_CORRECT_LOGIN_INFO(HttpStatus.BAD_REQUEST ,"비밀번호를 다시 확인해주세요."),
-    VERIFY_IS_FALSE(HttpStatus.BAD_REQUEST ,"계정을 인증해주세요.");
+    VERIFY_IS_FALSE(HttpStatus.BAD_REQUEST ,"계정을 인증해주세요."),
 
+    //ErrorCode for balance
+    INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST ,"잔액이 부족합니다.");
 
     private final HttpStatus httpStatus;
     private final String detail;
