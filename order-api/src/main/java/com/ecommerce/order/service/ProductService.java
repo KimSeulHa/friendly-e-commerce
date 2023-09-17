@@ -11,6 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+
+    /**
+     * 상품 추가
+     * @param sellerId
+     * @param form
+     * @return
+     */
     @Transactional
     public Product addProduct(Long sellerId, AddProductForm form){
         return productRepository.save(Product.of(sellerId,form));
