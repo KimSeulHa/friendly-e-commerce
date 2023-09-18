@@ -5,13 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddProductItemForm {
-    private Long productId;
+public class UpdateProductForm {
+    private Long id;
     private String name;
-    private Integer price;
-    private Integer count;
+    private String description;
+    private List<UpdateProductItemForm> productItemForms;
+
 }
