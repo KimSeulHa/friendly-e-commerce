@@ -51,4 +51,20 @@ public class ProductService {
         }
         return product;
     }
+
+    /**
+     * 상품 삭제
+     * @param sellerId
+     * @param id
+     * @return String
+     */
+    @Transactional
+    public String deleteProduct(Long sellerId, Long id){
+        Product product = productRepository.findBySellerIdAndId(sellerId,id)
+                .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_PRODUCT_NAME));
+        String name = product.getName();
+        productRepository.delete(product);
+
+        return name+"이 삭제되었습니다.";
+    }
 }

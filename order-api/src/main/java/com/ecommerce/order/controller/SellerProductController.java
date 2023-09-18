@@ -66,4 +66,28 @@ public class SellerProductController {
                                                   @RequestBody UpdateProductItemForm form){
         return ResponseEntity.ok(ProductItemDto.from(productItemService.updateItem(provider.getUserVo(token).getId(),form)));
     }
+
+    /**
+     * 상품 삭제
+     * @param token
+     * @param productId
+     * @return ResponseEntity<String>
+     */
+    @DeleteMapping("/deleteProduct")
+    public ResponseEntity<String> deleteProduct(@RequestHeader(name="X-AUTH-TOKEN") String token,
+                                                @RequestParam Long productId){
+        return ResponseEntity.ok(productService.deleteProduct(provider.getUserVo(token).getId(),productId));
+    }
+
+    /**
+     * 상품 아이템 삭제
+     * @param token
+     * @param productItemId
+     * @return ResponseEntity<String>
+     */
+    @DeleteMapping("/deleteItem")
+    public ResponseEntity<String> deleteItem(@RequestHeader(name="X-AUTH-TOKEN") String token,
+                                                @RequestParam Long productItemId){
+        return ResponseEntity.ok(productItemService.deleteItem(provider.getUserVo(token).getId(),productItemId));
+    }
 }
