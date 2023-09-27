@@ -1,16 +1,16 @@
 package com.ecommerce.order.domain.repository;
 
 import com.ecommerce.order.domain.entity.Product;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface ProductRepository extends JpaRepository<Product,Long> {
+@Primary
+public interface ProductRepository extends JpaRepository<Product,Long>, ProductRepositoryCustom {
     @EntityGraph(attributePaths = {"productItems"},type = EntityGraph.EntityGraphType.LOAD)
     Optional<Product> findBySellerIdAndId(Long sellerId, Long id);
     @EntityGraph(attributePaths = {"productItems"},type = EntityGraph.EntityGraphType.LOAD)
-    Optional<Product> findWithProductById(Long id);
+    Optional<Product> findWithProductItemsById(Long id);
 }
