@@ -1,0 +1,26 @@
+package com.ecommerce.order.controller;
+
+import com.ecommerce.domain.config.JwtAuthenticationProvider;
+import com.ecommerce.order.application.CartApplication;
+import com.ecommerce.order.domain.model.AddProductCartForm;
+import com.ecommerce.order.domain.redis.Cart;
+import com.ecommerce.order.service.CartService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/customer/cart")
+@RequiredArgsConstructor
+public class CustomerCartController {
+
+    private final CartApplication cartApplication;
+    private final JwtAuthenticationProvider provider;
+    @PostMapping
+    public ResponseEntity<Cart> addCart(
+            @RequestHeader(name="X-AUTH-TOKEN") String token,
+            @RequestBody AddProductCartForm form){
+        return ResponseEntity.ok(cartApplication.addCart(provider.getUserVo(token).getId(),form));
+    }
+
+}
