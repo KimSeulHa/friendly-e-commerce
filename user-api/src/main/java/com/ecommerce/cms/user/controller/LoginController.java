@@ -1,9 +1,8 @@
 package com.ecommerce.cms.user.controller;
 
 import com.ecommerce.cms.user.domain.model.LoginForm;
-import com.ecommerce.cms.user.service.LoginService;
-import com.ecommerce.domain.config.JwtAuthenticationProvider;
-import feign.Response;
+import com.ecommerce.cms.user.service.customer.LoginService;
+import com.ecommerce.cms.user.service.seller.SellerLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     private final LoginService loginService;
-    @PostMapping
-    public ResponseEntity<String> login(@RequestBody LoginForm form){
-        return ResponseEntity.ok(loginService.login(form));
+
+    private final SellerLoginService sellerLoginService;
+
+    @PostMapping("/customer")
+    public ResponseEntity<String> customerLogin(@RequestBody LoginForm form){
+        return ResponseEntity.ok(loginService.loginAndToken(form));
+    }
+
+    @PostMapping("/seller")
+    public ResponseEntity<String> sellerLogin(@RequestBody LoginForm form){
+        return ResponseEntity.ok(sellerLoginService.loginAndToken(form));
     }
 }
