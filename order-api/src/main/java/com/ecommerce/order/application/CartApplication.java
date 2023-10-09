@@ -8,11 +8,10 @@ import com.ecommerce.order.exception.CustomException;
 import com.ecommerce.order.exception.ErrorCode;
 import com.ecommerce.order.service.CartService;
 import com.ecommerce.order.service.ProductSearchService;
-import com.ecommerce.order.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,14 +36,127 @@ public class CartApplication {
 
         //2.상품 수량 확인
         Cart cart = cartService.getCart(customerId);
+
+        //3.상품 가능 여부 체크
         if(cart != null && !addAble(cart,product,form)){
             throw new CustomException(ErrorCode.ITEM_COUNT_NOT_ENOUGH);
         }
 
-        //3.장바구니 추가
+        //4.장바구니 추가
         return cartService.addCart(customerId,form);
     }
 
+    /**
+     * 장바구니 가져오기
+     * @param customerId
+     * @return Cart
+     */
+    public Cart getCart(Long customerId){
+        //1.장바구니 재조회
+        Cart cart = refreshCart(cartService.getCart(customerId));
+
+        //2.return을 위한 장바구니 생성
+        Cart returnCart = new Cart();
+        returnCart.setCustomerId(customerId);
+        returnCart.setProducts(cart.getProducts());
+        returnCart.setMsg(cart.getMsg());
+
+        //3.레디스 message 삭제
+        cart.setMsg(new ArrayList<>());
+        cartService.putCart(customerId,cart);
+        return returnCart;
+    }
+
+    /**
+     * 장바구니 변경사항 조회
+     * @param cart
+     * @return
+     */
+    public Cart refreshCart(Cart cart){
+
+        //고객 카트 상품id로 등록된 상품 DB list 가져오기 -> map으로 변환
+        List<Long> productIds = cart.getProducts().stream()
+                                .map(Cart.Product::getId).collect(Collectors.toList());
+        Map<Long,Product> productMap = searchService.getProductsByProductIds(productIds)
+                                    .stream().collect(Collectors.toMap(Product::getId,p->p));
+
+
+        //상품 유효성 체크
+        for(int i = 0; i < cart.getProducts().size(); i++){
+            Cart.Product cartProduct = cart.getProducts().get(i);
+
+            //1.상품의 존재여부 확인
+            Product product = productMap.get(cartProduct.getId());
+            if(product == null){
+                cart.getProducts().remove(cartProduct);
+                i--;
+                cart.addMsg(cartProduct.getName()+"상품이 품절되어 장바구니에서 삭제 되었습니다.");
+                continue;
+            }
+
+            //2.상품의 옵션 유효성 체크
+            Map<Long, ProductItem> itemMap = product.getProductItems().stream()
+                    .collect(Collectors.toMap(ProductItem::getId,productItem -> productItem));
+
+            List<String> tempMsg = new ArrayList<>();
+            for(int j = 0; j < cartProduct.getProductItems().size(); j++){
+                Cart.ProductItem cartItem = cartProduct.getProductItems().get(j);
+                ProductItem productItem = itemMap.get(cartItem.getId());
+
+                //2-1.옵션 존재여부 확인
+                if(productItem == null){
+                    cartProduct.getProductItems().remove(cartItem);
+                    j--;
+                    cart.addMsg(cartProduct.getName()+"상품의 "+cartItem.getName()+" 품절되어 장바구니에서 삭제 되었습니다.");
+                    continue;
+                }
+                //2-2.옵션 수량, 가격 확인하기
+                boolean isPrice = false, isCount = false;
+                if(!productItem.getPrice().equals(cartItem.getPrice())){
+                    isPrice = true;
+                    cartItem.setPrice(productItem.getPrice());
+                }
+
+                //주문 가능한 최대 수량으로 변경
+                if(productItem.getCount() < cartItem.getCount()){
+                    isCount = true;
+                    cartItem.setCount(productItem.getCount());
+                }
+
+                if(isPrice && isCount){
+                    tempMsg.add(cartProduct.getName()+"상품의 "+cartItem.getName()+" 옵션의 가격과 주문 가능 수량이 변동되었습니다.");
+                }else if(isPrice){
+                    tempMsg.add(cartProduct.getName()+"상품의 옵션의 가격이 변동되었습니다.");
+                }else if(isCount){
+                    if(cartItem.getCount() == 0){
+                        System.out.println("들어옴");
+                        cartProduct.getProductItems().remove(cartItem);
+                    }else{
+                        tempMsg.add(cartProduct.getName()+"상품의 주문 가능 수량이 변동되었습니다.");
+                    }
+                }
+            }
+
+            //3.상품의 옵션이 모두 존재하지 않아, 상품도 삭제하는 경우
+            if(cartProduct.getProductItems().size() == 0){
+                cart.getProducts().remove(cartProduct);
+                i--;
+                cart.addMsg(cartProduct.getName()+"상품이 품절되어 장바구니에서 삭제 되었습니다.");
+                continue;
+            }
+            if(tempMsg.size() > 0){
+                StringBuilder sb = new StringBuilder();
+                sb.append(cartProduct.getName()+"상품의 정보가 변경되었습니다.");
+                for(String msg : tempMsg){
+                    sb.append(msg);
+                    sb.append(",");
+                }
+                cart.addMsg(sb.toString());
+            }
+        }
+        cartService.putCart(cart.getCustomerId(),cart);
+        return cart;
+    }
     /**
      * 장바구니 추가 가능여부 확인(수량 체크)
      * @param cart

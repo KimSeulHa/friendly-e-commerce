@@ -23,6 +23,9 @@ public class Cart {
     private List<Product> Products = new ArrayList<>();
     private List<String> msg = new ArrayList<>();
 
+    public Cart(Long customerId){
+        this.customerId = customerId;
+    }
     public void addMsg(String msg){
         this.msg.add(msg);
     }

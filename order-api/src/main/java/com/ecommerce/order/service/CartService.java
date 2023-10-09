@@ -16,10 +16,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-    private final RedisClient redisClient;
 
+    private final RedisClient redisClient;
     public Cart getCart(Long customerId){
-        return redisClient.get(customerId, Cart.class);
+        Cart cart = redisClient.get(customerId, Cart.class);
+        return cart != null? cart : new Cart();
+    }
+
+    public Cart putCart(Long customerId,Cart cart){
+        redisClient.put(customerId,cart);
+        return cart;
     }
     public Cart addCart(Long customerId, AddProductCartForm form){
         Cart cart = redisClient.get(customerId,Cart.class);

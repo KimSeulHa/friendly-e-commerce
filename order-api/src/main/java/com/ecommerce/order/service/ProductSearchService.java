@@ -8,6 +8,7 @@ import com.ecommerce.order.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,5 +25,13 @@ public class ProductSearchService {
     public Product getItemsByProductId(Long productId){
         return productRepository.findWithProductItemsById(productId)
                 .orElseThrow(()->new CustomException(ErrorCode.NOT_FOUND_PRODUCT_ITEM));
+    }
+
+    public List<Product> getProductsByProductIds(List<Long> productIds){
+        List<Product> products = new ArrayList<>();
+        for(Long productId : productIds){
+            products.add(productRepository.findWithProductItemsById(productId).get());
+        }
+        return products;
     }
 }

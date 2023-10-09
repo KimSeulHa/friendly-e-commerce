@@ -18,6 +18,7 @@ public class RedisClient {
     private final RedisTemplate<String,Object> redisTemplate;
     private static final ObjectMapper mapper = new ObjectMapper();
     public <T> T get(Long key, Class<T> classType){
+
         return get(key.toString(),classType);
     }
     public <T> T get(String key, Class<T> classType){
