@@ -17,3 +17,7 @@ Goal: seller와 customer를 이루는 플랫폼 형식의 커머스 서버를 �
 ## Seller
 - [x] 회원 가입
 - [x] 이메일 인증
+
+## Order
+- [x] 상품 CRUD
+- [x] 장바구니 등록 및 조회
