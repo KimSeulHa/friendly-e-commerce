@@ -24,7 +24,8 @@ public class JwtAuthenticationProvider {
      * @return 생성된 TOKEN
      */
     public String createToken(String userPk, Long id, UserType userType){
-        Claims claims = Jwts.claims().setSubject(Aes256Util.encrypt(userPk)).setId(Aes256Util.encrypt(id.toString()));
+        Claims claims = Jwts.claims().setSubject(Aes256Util.encrypt(userPk))
+                .setId(Aes256Util.encrypt(id.toString()));
         claims.put("roles",userType);
 
         Date now = new Date();
