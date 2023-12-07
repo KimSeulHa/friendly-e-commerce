@@ -1,9 +1,10 @@
-package com.ecommerce.order.service;
+package com.ecommerce.order.application.service;
 
 import com.ecommerce.order.domain.entity.Product;
 import com.ecommerce.order.domain.model.AddProductForm;
 import com.ecommerce.order.domain.model.AddProductItemForm;
 import com.ecommerce.order.domain.repository.ProductRepository;
+import com.ecommerce.order.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
