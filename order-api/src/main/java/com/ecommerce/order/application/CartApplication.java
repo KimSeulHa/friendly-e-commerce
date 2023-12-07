@@ -190,5 +190,9 @@ public class CartApplication {
                     return ((fromProductItem.getCount() + cartCount) > ableCount);
                 });
     }
+    public Cart modifyCart(Long customerId, Cart cart){
+        cartService.putCart(customerId,cart);
+        return getCart(customerId);
+    }
 
 }
