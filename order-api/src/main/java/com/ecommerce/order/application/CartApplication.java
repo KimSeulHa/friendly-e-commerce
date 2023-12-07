@@ -162,27 +162,27 @@ public class CartApplication {
      * @param cart
      * @param product
      * @param form
-     * @return
+     * @return boolean
      */
     private boolean addAble(Cart cart,Product product, AddProductCartForm form) {
-        //1.Redis 장바구니에 있는 제품 ?????????
+        //1.Redis 장바구니에 있는 제품
         Cart.Product cartProduct = cart.getProducts().stream().filter(p -> p.getId().equals(form.getId()))
-                .findFirst().orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT_NAME));
+                .findFirst().orElse(new Cart.Product());
 
-        //2.
+        //2.Redis 장바구니에 있는 제품의 아이템의 개수
         Map<Long, Integer> cartItemCount = cartProduct.getProductItems().stream()
                 .collect(Collectors.toMap(Cart.ProductItem::getId, Cart.ProductItem::getCount));
 
-        //3.
+        //3.DB내에 있는 가능한 제품의 아이템의 개수
         Map<Long, Integer> ableItemCount = product.getProductItems().stream()
                 .collect(Collectors.toMap(ProductItem::getId, ProductItem::getCount));
 
-
+        //4.AddProductCartForm에 작성한 아이템의 개수와 주문 가능한 상품의 개수 확인 noneMatch
         return form.getProductItems().stream().noneMatch(
-                productItem -> {
-                    Integer cartCount = cartItemCount.get(productItem.getId());
-                    Integer ableCount = ableItemCount.get(productItem.getId());
-                    return (productItem.getCount() + cartCount > ableCount);
+                fromProductItem -> {
+                    Integer cartCount = cartItemCount.get(fromProductItem.getId());
+                    Integer ableCount = ableItemCount.get(fromProductItem.getId());
+                    return ((fromProductItem.getCount() + cartCount) > ableCount);
                 });
     }
     public Cart modifyCart(Long customerId, Cart cart){
