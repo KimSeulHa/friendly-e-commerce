@@ -1,4 +1,3 @@
-## 개요
 ### e-commerce project
 
 Use skill: Spring, Jpa, Mysql, Redis, Docker, AWS
