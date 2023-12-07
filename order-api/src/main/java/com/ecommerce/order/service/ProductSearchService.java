@@ -28,10 +28,6 @@ public class ProductSearchService {
     }
 
     public List<Product> getProductsByProductIds(List<Long> productIds){
-        List<Product> products = new ArrayList<>();
-        for(Long productId : productIds){
-            products.add(productRepository.findWithProductItemsById(productId).get());
-        }
-        return products;
+        return productRepository.findAllByIdIn(productIds);
     }
 }

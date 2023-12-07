@@ -167,7 +167,9 @@ public class CartApplication {
     private boolean addAble(Cart cart,Product product, AddProductCartForm form) {
         //1.Redis 장바구니에 있는 제품
         Cart.Product cartProduct = cart.getProducts().stream().filter(p -> p.getId().equals(form.getId()))
-                .findFirst().orElse(new Cart.Product());
+                //만약 없을 경우
+                .findFirst().orElse(Cart.Product.builder().id(product.getId())
+                        .productItems(Collections.emptyList()).build());
 
         //2.Redis 장바구니에 있는 제품의 아이템의 개수
         Map<Long, Integer> cartItemCount = cartProduct.getProductItems().stream()
@@ -180,7 +182,11 @@ public class CartApplication {
         //4.AddProductCartForm에 작성한 아이템의 개수와 주문 가능한 상품의 개수 확인 noneMatch
         return form.getProductItems().stream().noneMatch(
                 fromProductItem -> {
+
                     Integer cartCount = cartItemCount.get(fromProductItem.getId());
+                    if(cartCount == null){
+                        cartCount = 0;
+                    }
                     Integer ableCount = ableItemCount.get(fromProductItem.getId());
                     return ((fromProductItem.getCount() + cartCount) > ableCount);
                 });
