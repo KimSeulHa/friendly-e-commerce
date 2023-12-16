@@ -76,4 +76,9 @@ public class ProductItemService {
         return itemNm+"이 삭제되었습니다.";
     }
 
+    @Transactional
+    public ProductItem getProductItem(Long itemId){
+        return productItemRepository.getById(itemId);
+    }
+
 }
