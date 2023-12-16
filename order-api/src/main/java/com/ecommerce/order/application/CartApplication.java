@@ -54,6 +54,7 @@ public class CartApplication {
     public Cart getCart(Long customerId){
         //1.장바구니 재조회
         Cart cart = refreshCart(cartService.getCart(customerId));
+        cartService.putCart(cart.getCustomerId(),cart);
 
         //2.return을 위한 장바구니 생성
         Cart returnCart = new Cart();
@@ -72,14 +73,13 @@ public class CartApplication {
      * @param cart
      * @return
      */
-    public Cart refreshCart(Cart cart){
+    protected Cart refreshCart(Cart cart){
 
         //고객 카트 상품id로 등록된 상품 DB list 가져오기 -> map으로 변환
         List<Long> productIds = cart.getProducts().stream()
                                 .map(Cart.Product::getId).collect(Collectors.toList());
         Map<Long,Product> productMap = searchService.getProductsByProductIds(productIds)
                                     .stream().collect(Collectors.toMap(Product::getId,p->p));
-
 
         //상품 유효성 체크
         for(int i = 0; i < cart.getProducts().size(); i++){
@@ -129,7 +129,6 @@ public class CartApplication {
                     tempMsg.add(cartProduct.getName()+"상품의 옵션의 가격이 변동되었습니다.");
                 }else if(isCount){
                     if(cartItem.getCount() == 0){
-                        System.out.println("들어옴");
                         cartProduct.getProductItems().remove(cartItem);
                     }else{
                         tempMsg.add(cartProduct.getName()+"상품의 주문 가능 수량이 변동되었습니다.");
@@ -154,7 +153,7 @@ public class CartApplication {
                 cart.addMsg(sb.toString());
             }
         }
-        cartService.putCart(cart.getCustomerId(),cart);
+        //cartService.putCart(cart.getCustomerId(),cart);
         return cart;
     }
     /**
